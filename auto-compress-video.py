@@ -11,17 +11,18 @@ import sys
 import re
 import math
 import subprocess
+import time
 
 scriptVersion = 0.1
 
 argumentParser = argparse.ArgumentParser(description='auto-compress-video.py version ' + str(scriptVersion))
-argumentParser.add_argument('-r',
-							 '-root-dir', 
-							 type=str,
-							 help='The root directory to search for media. Default is script root', 
-							 required=False, 
-							 default='.')
-argumentParser.add_argument('-i',
+argumentParser.add_argument('-rd',
+							'-root-dir', 
+							type=str,
+							help='The root directory to search for media. Default is script root', 
+							required=False, 
+							default='.')
+argumentParser.add_argument('-ib',
 							'-ideal-bitrate', 
 							type=float,
 							help='The ideal bitrate that files should comply with (kbps). Default is 1000kbps',
@@ -29,17 +30,16 @@ argumentParser.add_argument('-i',
 							default=1000)
 argumentParser.add_argument('-v',
 							'-verbose',
-							nargs='?',
-							type=bool,
+							action='store_true',
 							help='Verbose output of script',
-							required=False,
-							default=False)
+							required=False)
 argumentParser.add_argument('-l',
 							'-log',
 							type=str,
-							help='Save results to log file at root of script (optionally include location in this argument)',
+							nargs='?',
+							help='Create a log file of output data. Add directory to argument to specify file location',
 							required=False,
-							default=False)
+							default='NoLogging')
 inputArguments = vars(argumentParser.parse_args())
 
 def getVideoData_ffprobe(fileName):
@@ -67,25 +67,35 @@ def txtRepresentRatio(ratio):
 	elif ratio >= 2:
 		return '[' + '-' * 20 + '|' + '-' * 0 + ']' 
 
-
 print('-----------------------------------------------------------------')
 print('-- auto-compress-video.py version ' + str(scriptVersion))
 print('-----------------------------------------------------------------')
 
-directoryRoot = inputArguments['r']
+directoryRoot = inputArguments['rd']
 verbose = inputArguments['v']
-print verbose
-idealBitrate = inputArguments['i']
-idealHourlySize = (((idealBitrate*1000*60*60)/8)/1024)/1024
 
+if inputArguments['l'] == 'NoLogging':
+	logging = False
+else:
+	logging = True
+	logFileName = 'acv-log_' + time.strftime('%Y%m%d_%H%M%S') + '.csv'
+	if inputArguments['l'] == None: logFile = os.path.join('.', logFileName)
+	else: logFile = os.path.join(inputArguments['l'], logFileName)
+
+idealBitrate = inputArguments['ib']
+idealHourlySize = sizeOf_readable(idealBitrate*1000/8*60*60)
+
+print('-- Root Directory:  ' + os.path.abspath(directoryRoot))
+if logging:
+	logFileHandle = open(os.path.abspath(logFile), 'w')
+	logFileHandle.write('Filename,Size,Duration,Bitrate,Ratio\r\n')
+	print('-- Output log file: ' + os.path.abspath(logFile))
+print('-- Ideal bitrate:   ' + str(idealBitrate) + 'kb/s (avg.) (' + str(idealHourlySize) + '/hr)')
 numberOfBranches = 0
 for root, subDirs, files in os.walk(directoryRoot):
 	for fileN in files:
 		numberOfBranches += 1
-
-print('-- Root Directory:     ' + os.path.abspath(directoryRoot))
-print('-- Ideal bitrate:      ' + str(idealBitrate) + 'kb/s (avg.) (' + str(idealHourlySize) + 'MB/hr)')
-print('-- Total branches:     ' + str(numberOfBranches))
+print('-- Total branches:  ' + str(numberOfBranches))
 print('-- File list: ----------------------------------------------------')
 
 searchPattern = re.compile('.*(\.avi|\.mkv|\.mp4|\.m4v)$')
@@ -113,12 +123,14 @@ for root, subDirs, files in os.walk(directoryRoot):
 				if videoRatio > 1: videoFilesExceeding_1_0 += 1
 				if videoRatio > 1.5: videoFilesExceeding_1_5 += 1
 				if videoRatio > 2.0: videoFilesExceeding_2_0 += 1
+				if logging: logFileHandle.write('"' + fileName + '",' + str(sizeOf_readable(fileSize)) + ',' + videoDataMatch.group(1) + ',' + videoDataMatch.group(2) + ',' + str(videoRatio) + '\r\n')
 				if verbose: print('[' + str(sizeOf_readable(fileSize)) + '] [' + videoDataMatch.group(1) + '] [' + videoDataMatch.group(2) + 'kb/s]')
 				if verbose: print('[' + str(videoRatio) + '] ' + txtRepresentRatio(videoRatio))
 			else:
 				ffprobeErrors += 1
+				if logging: logFileHandle.write('"' + fileName + '",' + str(sizeOf_readable(fileSize)) + ', Error: ffprobe unable to find video data\r\n')
 				if verbose: print('Error: ffprobe unable to find video data')
-		print('\rComplete: ' + str(completionPerc) + '%'),
+		print('\r-- Complete: ' + str(completionPerc) + '%'),
 
 print('\r\n-- Branches scanned: ' + str(branchN))
 print('-- Video files found: ' + str(videoFilesScanned))
@@ -128,3 +140,4 @@ print('-- Files exceeding ratio 1.5: ' + str(videoFilesExceeding_1_5))
 print('-- Files exceeding ratio 2.0: ' + str(videoFilesExceeding_2_0))
 print('-----------------------------------------------------------------')
 
+logFileHandle.close()
