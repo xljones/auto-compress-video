@@ -28,7 +28,7 @@ def sizeOf_readable(numBytes, suffix='B'):
 		numBytes /= 1024.0
 	return '%.1f%s%s' % (numBytes, 'Y', suffix)
 def txtRepresentRatio(ratio):
-	if (ratio < 1):
+	if ratio < 1:
 		return '[' + '-' * int(round(ratio * 10)) + '|' + '-' * int(10 + (10 - round(ratio * 10))) + ']'
 	elif ratio == 1:
 		return '[' + '-' * 10 + '|' + '-' * 10 + ']'
