@@ -13,9 +13,9 @@ import math
 import subprocess
 import time
 
-scriptVersion = 0.1
+scriptVersion = "0.1a"
 
-argumentParser = argparse.ArgumentParser(description='auto-compress-video.py version ' + str(scriptVersion))
+argumentParser = argparse.ArgumentParser(description='auto-compress-video.py version ' + scriptVersion)
 argumentParser.add_argument('-rd',
 							'-root-dir', 
 							type=str,
@@ -140,4 +140,4 @@ print('-- Files exceeding ratio 1.5: ' + str(videoFilesExceeding_1_5))
 print('-- Files exceeding ratio 2.0: ' + str(videoFilesExceeding_2_0))
 print('-----------------------------------------------------------------')
 
-logFileHandle.close()
+if logging: logFileHandle.close()
