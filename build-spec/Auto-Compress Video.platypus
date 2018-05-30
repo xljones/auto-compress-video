@@ -3,18 +3,18 @@
 <plist version="1.0">
 <dict>
 	<key>AcceptsFiles</key>
-	<false/>
+	<true/>
 	<key>AcceptsText</key>
 	<false/>
 	<key>Authentication</key>
 	<false/>
 	<key>Author</key>
-	<string>Xander</string>
+	<string>Alex Jones</string>
 	<key>BundledFiles</key>
 	<array>
-		<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/Credits.rtf</string>
-		<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/ffprobe</string>
-		<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/HandBrakeCLI</string>
+		<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/src/Credits.rtf</string>
+		<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/src/ffprobe</string>
+		<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/src/HandBrakeCLI</string>
 	</array>
 	<key>Creator</key>
 	<string>Platypus-5.2</string>
@@ -27,11 +27,11 @@
 	<key>DocIconPath</key>
 	<string></string>
 	<key>Droppable</key>
-	<false/>
+	<true/>
 	<key>ExecutablePath</key>
 	<string>/usr/local/share/platypus/ScriptExec</string>
 	<key>IconPath</key>
-	<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/icon.icns</string>
+	<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/src/icon.icns</string>
 	<key>Identifier</key>
 	<string>org.xander.autocompressvideo</string>
 	<key>InterfaceType</key>
@@ -49,19 +49,15 @@
 	<key>Overwrite</key>
 	<false/>
 	<key>PromptForFileOnLaunch</key>
-	<false/>
+	<true/>
 	<key>RemainRunning</key>
 	<true/>
 	<key>RunInBackground</key>
 	<false/>
 	<key>ScriptArgs</key>
-	<array>
-		<string>-v</string>
-		<string>-ib=100</string>
-		<string>-rd=/Volumes/4TB-EXT-HDD/Videos/TV Shows</string>
-	</array>
+	<array/>
 	<key>ScriptPath</key>
-	<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/auto-compress-video.py</string>
+	<string>/Users/Alex/Dropbox/GitHub/auto-compress-video/src/auto-compress-video.py</string>
 	<key>StatusItemDisplayType</key>
 	<string>Text</string>
 	<key>StatusItemIcon</key>
@@ -255,7 +251,6 @@
 	<array/>
 	<key>UniformTypes</key>
 	<array>
-		<string>public.item</string>
 		<string>public.folder</string>
 	</array>
 	<key>UseXMLPlistFormat</key>
